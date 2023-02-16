@@ -1,0 +1,48 @@
+﻿.text-center {
+    text-align: center;
+}
+
+.firstBlockText {
+    font-size: 20px;
+}
+
+.firstBlock {
+    margin-top: 3%;
+    margin-bottom: 3%;
+    padding-left: 10%;
+    padding-right: 10%;
+}
+
+.firstBlockHeader {
+    margin-bottom: 4%;
+}
+
+.carImg {
+    width: 80% !important;
+    height: 650px !important;
+}
+
+.secondBlock {
+    margin-bottom: 4%;
+}
+
+.video {
+    width: 80%;
+    height: 650px;
+}
+
+.thirdBlock {
+    margin-bottom: 4%;
+}
+
+.carousel-control-prev {
+    width: 10%;
+    color: darkslategrey;
+    background-color: #198754;
+}
+
+.carousel-control-next {
+    width: 10%;
+    color: darkslategrey;
+    background-color: #198754;
+}

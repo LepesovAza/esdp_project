@@ -1,0 +1,72 @@
+﻿<link type="text/css" rel="stylesheet" href="~/css/Home/Index.css" />
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer;
+@model Autopodbor_312.ViewModel.MainPageViewModel;
+@{
+    ViewData["Title"] = @localizer["mainPageTitle"];
+}
+<div class="row row-cols-1 row-cols-md-2 mb-3">
+    <div class="col">
+        <img class="img-fluid" src="@Model.FirstBanner.Path" alt="@Model.FirstBanner.TitleRu">
+    </div>
+    <div class="col banner-body">
+        @if (System.Threading.Thread.CurrentThread.CurrentCulture.Name == "ru")
+        {
+            <h2 class="banner-title display-5 text-center">@Model.FirstBanner.TitleRu</h2>
+            <p class="fs-4 text-center">@Model.FirstBanner.DescriptionRu</p>
+        }
+        else
+        {
+            <h5 class="banner-title display-5 text-center">@Model.FirstBanner.TitleKy</h5>
+            <p class="fs-4 text-center ">@Model.FirstBanner.DescriptionKy</p>
+        }
+        <a class="btn orderButton" asp-controller="Service" asp-action="Services">@localizer["orderButton"]</a>
+    </div>
+</div>
+
+<div class="position-relative mb-3">
+    <img class="w-100 h-auto" src="@Model.SecondBanner.Path" alt="Photo">
+    <div class="about-body">
+        @if(System.Threading.Thread.CurrentThread.CurrentCulture.Name == "ru")
+        {
+            <h3>@Model.SecondBanner.TitleRu</h3>
+            <p>@Model.SecondBanner.DescriptionRu</p>
+        }else{
+            <h5>@Model.SecondBanner.TitleKy</h5>
+            <p>@Model.SecondBanner.DescriptionKy</p>
+        }
+    </div>
+</div>
+
+
+<div id="photosCarousel" class="carousel carousel-dark slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+        @for (int j = 0; j < Model.ThirdBanner.Count(); j++)
+        {
+            <div class="carousel-item @(j==0 ? "active" : "")">
+                <div class="row row-cols-2">
+                        <img class="d-block col" src="@Model.ThirdBanner[j].Path" alt="Photo">
+                        <div class="col carousel-body">
+                            @if (System.Threading.Thread.CurrentThread.CurrentCulture.Name == "ru")
+                            {
+                                <h3 class="fs-2 text-uppercase">@Model.ThirdBanner[j].TitleRu</h3>
+                                <p class="fs-6">@Model.ThirdBanner[j].DescriptionRu</p>
+                            }
+                            else
+                            {
+                                <h3 class="fs-2 text-uppercase">@Model.ThirdBanner[j].TitleKy</h3>
+                                <p class="fs-6">@Model.ThirdBanner[j].DescriptionKy</p>
+                            }
+                        </div>
+                    </div>
+            </div>
+        }
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#photosCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#photosCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>

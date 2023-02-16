@@ -1,0 +1,68 @@
+﻿.paginationButtons {
+    text-align: center;
+}
+
+.buttons {
+    color: white !important;
+    background-color: #198754;
+    border-color: #257d70;
+    width: 70%;
+    margin-left: 14%;
+    margin-bottom: 30px;
+    font-size: 20px;
+}
+
+h1 {
+    margin-top: 30px;
+    margin-bottom: 50px;
+    text-align: center;
+}
+
+.details-button {
+    background-color: #4d4d4d;
+}
+
+.btn-outline-secondary:hover {
+    color: #fff;
+    background-color: #0e4f31;
+}
+
+.card {
+    border: 0px;
+    border-radius: 2%;
+    transition: transform .2s;
+}
+
+.card:hover {
+    color: #fff;
+}
+
+.card:hover {
+    -ms-transform: scale(1.07);
+    -webkit-transform: scale(1.07);
+    transform: scale(1.07);
+}
+
+.cuttedText {
+    font-size: 20px;
+    text-align: center;
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+}
+
+.card-body {
+    background-color: #6b6b6b;
+    height: 300px;
+}
+
+.filter-block {
+    margin-top: 70px;
+}
+
+.filter-button:hover {
+    background-color:#6b6b6b !important;
+}

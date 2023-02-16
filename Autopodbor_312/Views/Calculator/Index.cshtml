@@ -1,0 +1,174 @@
+﻿<link type="text/css" rel="stylesheet" href="~/css/Calculator/Index.css" />
+@model Autopodbor_312.ViewModel.CalculatorViewModel;
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer;
+
+@{
+	ViewBag.Title = @localizer["calculatorTitle"];
+}
+
+<h1 class="text-center mt-4 mb-3">@localizer["titleDescription"] </h1>
+
+
+<div class="row justify-content-center">
+	<div class="col-7 text-center bg-color">
+		<form>
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<div class="form-group mb-2 mt-2">
+				<label class="control-label text-style">@localizer["brandLabelOrderForm"]</label>
+				<select onchange="GetSelectedTextValue(this)" class="form-control form-style" id="brand">
+					<option value="" disabled selected hidden>@localizer["brandOptionOrderForm"]</option>
+					@foreach (var brand in Model.CarsBrands)
+					{
+						<option data-id="@brand.Id" value="@brand.Price">@brand.Brand</option>
+					}
+				</select>
+				<p id="validBrand" class="mb-0" style="color:red; font-size:13px"></p>
+			</div>
+			
+			<div class="form-group mb-2">
+				<label class="control-label text-style">@localizer["modelLabel"]</label>
+				<select class="form-control form-style" id="select-model">
+					<option value="" disabled selected hidden>@localizer["modelOptionOrderForm"]</option>
+					@if (Model.CarsBrandsModels != null)
+					{
+						@foreach (var brand in Model.CarsBrandsModels)
+						{
+							<option data-id="@brand.Id" value="@brand.Price">@brand.Model</option>
+						}
+					}
+				</select>
+				<p id="validModel" class="mb-0" style="color:red; font-size:13px"></p>
+			</div>
+
+			<div class="form-group mb-2">
+				<label class="control-label text-style">@localizer["bodyTypeLabel"]</label>
+				<select class="form-control form-style" id="body">
+					<option value="" disabled selected hidden>@localizer["bodyOptionOrderForm"]</option>
+					@foreach (var body in Model.CarsBodyTypes)
+					{
+						<option value="@body.Price">@body.BodyType</option>
+					}
+				</select>
+				<p id="validBody" class="mb-0" style="color:red; font-size:13px"></p>
+			</div>
+			
+			<div class="form-group mb-2">
+				<label class="control-label text-style">@localizer["manufacturesYearLabel"]</label>
+				<select class="form-control form-style" id="year">
+					<option value="" disabled selected hidden>@localizer["yearOptionOrderForm"]</option>
+					@foreach (var year in Model.CarsYears)
+					{
+						<option value="@year.Price">@year.ManufacturesYear</option>
+					}
+				</select>
+				<p id="validYear" class="mb-0" style="color:red; font-size:13px"></p>
+			</div>
+		
+			<div class="form-group">
+				<label class="control-label text-style">@localizer["fuelsTypeLabel"]</label>
+				<select class="form-control form-style" id="fuel">
+					<option value="" disabled selected hidden>@localizer["fuelOptionOrderForm"]</option>
+					@foreach (var fuel in Model.CarsFuels)
+					{
+						<option value="@fuel.Price">@fuel.FuelsType</option>
+					}
+				</select>
+				<p id="validFuel" class="mb-0" style="color:red; font-size:13px"></p>
+			</div>
+		
+			<div class="form-group">
+				<input type="submit" value="@localizer["calculateButton"]" class="btn btnStyle mt-4" onclick="Calculate()" />
+				<div class="result-sum" id="sum">
+               </div>
+			</div>
+		</form>
+	</div>
+
+</div>
+
+
+
+@section Scripts
+	{
+	<script>
+		let Id = '';
+		function GetId(id) {
+			Id = id;
+		};
+		const selectModal = $('#select-model');
+		const addOption = (options) => {
+			if (options.length > 0) {
+				options.forEach((item) => {
+					selectModal.append(`<option value="${item.price}">${item.model}</option>`)
+				});
+				return;
+			}
+			selectModal.append('<option value="">Нет моделей</option>');
+		};
+		function GetSelectedTextValue(brand) {
+			let brandId = brand.options[brand.selectedIndex].getAttribute('data-id');
+			$.ajax({
+				url: '@Url.Action("GetModel", "Calculator")',
+				type: 'POST',
+				data: {
+					'brandId': brandId,
+				},
+				success: (response) => {
+					selectModal.empty();
+					addOption(response.carsBrandsModels);
+				}
+			});
+			event.preventDefault();
+		};
+
+		function Calculate() {
+			event.preventDefault();
+			let isValid=true;
+			let brand = $("#brand").val();
+			console.log(brand);
+			let body = $("#body").val();
+			console.log(body);
+			let year = $("#year").val();
+			console.log(year);
+			let fuel = $("#fuel").val();
+			console.log(fuel);
+			let model = $("#select-model").val();
+			console.log(model);
+			if (brand === null) {
+				document.getElementById("validBrand").innerHTML = `*@localizer["validBrand"]`;
+				isValid = false;
+			}else{
+				document.getElementById("validBrand").innerHTML = ``;
+			};
+			if (body === null) {
+				document.getElementById("validBody").innerHTML = `*@localizer["validBody"]`;
+				isValid = false;
+			} else {
+				document.getElementById("validBody").innerHTML = ``;
+			};
+			if (year === null) {
+				document.getElementById("validYear").innerHTML = `*@localizer["validYear"]`;
+				isValid = false;
+			} else {
+				document.getElementById("validYear").innerHTML = ``;
+			};
+			if (fuel === null) {
+				document.getElementById("validFuel").innerHTML = `*@localizer["validFuel"]`;
+				isValid = false;
+			} else {
+				document.getElementById("validFuel").innerHTML = ``;
+			};
+			if (model === null) {
+				document.getElementById("validModel").innerHTML = `*@localizer["validModel"]`;
+				isValid = false;
+			} else {
+				document.getElementById("validModel").innerHTML = ``;
+			};
+			if(isValid===false){
+				return;
+			}
+			let sum = Number(brand) + Number(body) + Number(year) + Number(fuel) + Number(model);
+			document.getElementById('sum').innerHTML = `${sum}`;
+		};
+	</script>
+}

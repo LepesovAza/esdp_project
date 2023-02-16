@@ -1,0 +1,194 @@
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer;
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>@ViewData["Title"] - Autopodbor_312</title>
+	
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.0/dist/sweetalert2.all.min.js"></script>
+	<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.0/dist/sweetalert2.min.css" rel="stylesheet">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+	
+	<script src="https://kit.fontawesome.com/a43524ab5b.js" crossorigin="anonymous"></script>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+	<link type="text/css" rel="stylesheet" href="~/css/style.css">
+	<script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+</head>
+<body>
+	<header class ="sticky-top mb-3">
+		<nav class="navbar navbar-expand-lg navbar-dark">
+			<div class="container">
+				<div class="logo pb-0 pt-0 mt-0 mb-0">
+					<a asp-controller="Home" asp-action="Index">
+						<img src="/Files/MainPage/logo.png" class="logotype" width="120" height="120" alt="autopobor312 logo">
+					</a>
+				</div>
+			
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu" 
+				        aria-controls="navbarMenu" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				
+				<div class="collapse navbar-collapse justify-content-end" id="navbarMenu">
+					<ul class="navbar-nav">
+						<li class="nav-item">
+							<a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">@localizer["mainPaigButton"]</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" asp-area="" asp-controller="News" asp-action="Index">@localizer["newsButton"]</a>
+						</li>
+						<li class="nav-item dropdown">
+							<a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">@localizer["portfolioButton"]</a>
+							<ul class="dropdown-menu">
+								<li><a class="dropdown-item" asp-controller="Portfolio" asp-action="IndexTurnkeySelection">@localizer["portfolioTurnkeySelection"]</a></li>
+								<li><a class="dropdown-item" asp-controller="Portfolio" asp-action="IndexFieldInspection">@localizer["portfolioFieldInspection"]</a></li>
+							</ul>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" asp-area="" asp-controller="Service" asp-action="Services">@localizer["servicesButton"]</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" asp-area="" asp-controller="ContactInformations" asp-action="Index">@localizer["contactInformationButton"]</a>
+						</li>
+						<li class="nav-item">
+							<partial name="_Culture"/>
+						</li>
+						@if (User.Identity.IsAuthenticated){
+							<li class="nav-item">
+								<a class="nav-link" asp-area="" asp-controller="Admin" asp-action="AdminArea">Личный Кабинет</a>
+							</li>
+							<li class="nav-item">
+								<form method="post" asp-controller="Admin" asp-action="LogOff">
+									<input class="btn nav-link" type="submit" value="Выйти"/>
+								</form>
+							</li>
+						} else{
+							<li class="nav-item">
+								<a class="nav-link" asp-controller="Admin" asp-action="Login">Войти</a>
+							</li>
+						}
+					</ul>
+				</div>
+			</div>
+			</nav>
+	</header>
+
+	<div class="container" style="margin-bottom: 3em">
+		<main role="main">
+			@RenderBody()
+		</main>
+	</div>
+
+	<footer class="footer">
+		<div class="container">
+			<div class="d-flex justify-content-center social-icons">
+				<a href="https://www.instagram.com/autopodbor.312/"> <i class="fab fa-instagram icon"></i></a>
+				<a href="https://wa.me/996558303707"><i class="fab fa-whatsapp icon"></i></a>
+				<a href="https://t.me/+996558303707"><i class="fab fa-telegram icon"></i></a>
+				<a href="mailto:mgaldobin@mail.ru"><i class="fa-solid fa-envelope icon "></i> </a>
+				<a href="tel:+996(558303707)"><i class="fa-solid fa-phone icon"></i></a><br/>				
+			</div>
+			<p class="privacy mb-0" style="font-size:13px"><a class="text-white text-decoration-none text-reset" asp-controller="Home" asp-action="Privacy">@localizer["privacy"]</a></p>
+		</div>
+	</footer>
+	@RenderSection("Scripts", required: false)
+
+<div class="callback-bt" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#callbackModal">
+	<div class="text-call">
+		<span id="call">@localizer["callbackButton"]</span>
+	</div>
+</div>
+
+<!-- CallbackModal -->
+<div class="modal fade" id="callbackModal" tabindex="-1" aria-labelledby="callbackModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="callbackModalLabel">@localizer["callbackFormTitle"]</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<form action="" id="callBackform" role="form">
+				<div class="modal-body text-center">
+					<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+					<div class="form-group">
+						<label class="control-label">@localizer["nameLabelCallbackForm"]</label>
+						<input id="UserName" class="form-control" />
+					</div>
+					<div class="form-group">
+						<label class="control-label">@localizer["phoneNumberLabelCallbackForm"]</label>
+						<input type="number" id="Phone" class="form-control" required oninvalid="this.setCustomValidity('@localizer["customValidityPhoneNumber"]')" onchange="this.setCustomValidity('')" />
+					</div>
+					<div class="form-group">
+						<label class="control-label">@localizer["emailLabelCallbackForm"]</label>
+						<input id="email" class="form-control" type="email" oninvalid="this.setCustomValidity('@localizer["customValidityEmail"]')" onchange="this.setCustomValidity('')" />
+					</div>
+					<div class="form-group">
+						<label class="control-label">@localizer["сommentLableCallbackForm"]</label>
+						<textarea id="comment" class="form-control"></textarea>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="submit" class="btn callback-btn-style">@localizer["orderCallbackButton"]</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</body>
+</html>
+<script>
+	$(document).ready(function () {
+		$("#callBackform").submit(function (e) {
+			e.preventDefault();
+			let name = $('#UserName').val();
+			let number = $('#Phone').val();
+			let email = $('#email').val();
+			let comment = $('#comment').val();
+			$.ajax({
+				url: '@Url.Action("CreateCallBackAndAdditionalService", "Order")',
+				type: 'POST',
+				data: {
+					'userName': name,
+					'phoneNumber': number,
+					'email': email,
+					'comment': comment
+				},
+				success: function () {
+					Swal.fire(
+						'Заявка принята, ожидайте звонка!',
+						'Спасибо',
+						'success'
+					).then(function () {
+						  $('#callbackModal').modal('hide');
+						$('#callBackform')[0].reset();
+							 
+					});
+				},
+				failure: function () {
+
+					Swal.fire(
+						'Произошла ошибка при заказе!',
+						'Попробуйте заново',
+						'success'
+					);
+				},
+				error: function () {
+					;
+					Swal.fire(
+						'Произошла ошибка при заказе!',
+						'Попробуйте заново',
+						'success'
+					);
+				}			
+			});
+			return false;
+		});
+	});
+</script>

@@ -1,0 +1,168 @@
+﻿<link type="text/css" rel="stylesheet" href="~/css/Media/Portfolio/PortfolioIndex.css" />
+@model Autopodbor_312.ViewModel.FilterPortfolioViewModel;
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer;
+
+@{
+	ViewData["Title"] = @localizer["portfolioTitle"];
+}
+
+<h1 class="title text-center py-4">@localizer["portfolioTurnkeySeclectionTitle"]</h1>
+
+
+
+<form class="text-center" method="get">
+	<div class="row select-style">
+		<div class="col-sm">
+			<label class="control-label">@localizer["carsBodyLabelOrderForm"] </label>
+			<select  class="form-select" name="bodyType">
+					@if (Model.SelectedBodyType == 0 || Model.SelectedModel == null)
+				{
+					<option value="0">@localizer["allFilter"]</option>
+					@for (int i = 0; i < Model.CarsBodyTypes.Count; i++)
+					{
+						<option value="@Model.CarsBodyTypes[i].Id">@Model.CarsBodyTypes[i].BodyType</option>
+					}
+				}
+				else
+				{
+					<option value="@Model.SelectedBodyType">@Model.SelectedBodyTypeString</option>
+					@for (int i = 0; i < Model.CarsBodyTypes.Count; i++)
+				{
+					@if (@Model.CarsBodyTypes[i].Id != @Model.SelectedBodyType)
+					{
+				<option value="@Model.CarsBodyTypes[i].Id">@Model.CarsBodyTypes[i].BodyType</option>
+					}
+				}
+				}
+			</select>
+		</div>
+		<div class="col-sm">
+			<label class="control-label">@localizer["brandLabelOrderForm"] </label>
+			<select onchange="GetSelectedTextValue(this)" class="form-select" id="brand" name="brand">
+				
+				@if (Model.SelectedBrand == 0 || Model.SelectedModel == null)
+				{
+					<option value="0">@localizer["allFilter"]</option>
+					@for (int i = 0; i < Model.CarsBrands.Count; i++)
+					{
+						<option  data-id="@Model.CarsBrands[i].Id"  value="@Model.CarsBrands[i].Id">@Model.CarsBrands[i].Brand</option>
+					}
+				}
+				else
+				{
+					<option value="0">@localizer["allFilter"]</option>
+					<option  data-id="@Model.SelectedBrand" value="@Model.SelectedBrand" selected>@Model.SelectedBrandString</option>
+
+					@for (int i = 0; i < Model.CarsBrands.Count; i++)
+					{
+						if (Model.CarsBrands[i].Id != Model.SelectedBrand)
+						{
+							<option data-id="@Model.CarsBrands[i].Id"  value="@Model.CarsBrands[i].Id">@Model.CarsBrands[i].Brand</option>
+						}
+					}
+				}
+			</select>
+		</div>
+			<div class="col-sm">
+			<label class="control-label">@localizer["modelLabelOrderForm"]  </label>
+			<select  class="form-select" name="model" id="select-model">
+
+				@if (Model.SelectedBrand != null)
+				{
+					@if (Model.SelectedModelString=="")
+					{
+						<option value="0" selected>@localizer["allFilter"] </option>
+					}
+					else
+					{
+					<option value="0">@localizer["allFilter"]</option>
+					<option data-id="@Model.SelectedModel" value = "@Model.SelectedModel" selected >@Model.SelectedModelString</option>
+					}					
+				}				
+				@if (Model.CarsModels != null)
+				{
+					@foreach (var brand in Model.CarsModels)
+					{
+						if (brand.Id != Model.SelectedModel)
+						{	
+							<option data-id="@brand.Id" value="@brand.Id">@brand.Model</option>
+						}					
+					}
+				}
+			</select>
+		</div>		
+	</div>
+	<input type="submit" value="@localizer["filter"]" class="btn btn-outline-secondary filter-button mt-2 " />
+</form>
+
+
+
+        <div class="secondBlock">
+			<div class="row justify-content-evenly filter-block">
+                @foreach (var item in Model.Portfolios)
+                {
+                <div class="card col-md-2 mb-5 px-4" style="width: 27rem;">
+				<img src="@item.MainImagePath" class="card-img-top rounded-top-5" width="100" height="260" alt="MainImagePath">
+                <div class="card-body">
+					@if (System.Threading.Thread.CurrentThread.CurrentCulture.Name == "ru")
+                        {
+
+							<h2 class="card-title text-center pb-2 fs-4 fw-bold">@item.NameRu</h2>
+                            <p class="card-text cuttedText">@item.BodyRu</p>
+                        }
+                     else
+                        {
+							<h2 class="card-title text-center pb-2 fs-4 fw-bold">@item.NameKy</h2>
+							<p class="card-text cuttedText">@item.BodyKy</p>
+                        }
+                </div>
+							<a class="btn btn-outline-dark details-button" asp-controller="Portfolio" asp-action="DetailsPortfolio" asp-route-id="@item.Id">@localizer["detailsButton"]</a>
+				 </div>
+                }
+            </div>
+        </div>
+<div class="paginationButtons pt-2 pb-3">
+@{
+	var prevDisabled = !Model.Portfolios.PreviousPage ? "disabled" : "";
+	var nextDisabled = !Model.Portfolios.NextPage ? "disabled" : "";
+}	
+<a asp-action="IndexTurnkeySelection" asp-route-bodyType="@Model.SelectedBodyType" asp-route-brand="@Model.SelectedBrand" asp-route-model="@Model.SelectedModel" asp-route-pageIndex="@(Model.Portfolios.PageIndex-1)" class="btn btn-outline-dark @prevDisabled">@localizer["previousButton"]</a>
+<a asp-action="IndexTurnkeySelection" asp-route-bodyType="@Model.SelectedBodyType" asp-route-brand="@Model.SelectedBrand" asp-route-model="@Model.SelectedModel" asp-route-pageIndex="@(Model.Portfolios.PageIndex+1)" class="btn btn-outline-dark @nextDisabled">@localizer["nextButton"]</a>
+</div>
+
+@section Scripts
+	{
+	<script>
+
+		let Id = '';
+		function GetId(id) {
+			Id = id;
+		};
+		const selectModal = $('#select-model');
+		const addOption = (options) => {
+			if (options.length > 0) { 
+				selectModal.append(`<option value="0">@localizer["allFilter"]</option>`)
+				options.forEach((item) => {						
+					selectModal.append(`<option value="${item.id}">${item.model}</option>`)
+				});
+				return;
+			}
+			selectModal.append('<option value="">Нет моделей</option>');
+		};
+		function GetSelectedTextValue(brand) {
+			let brandId = brand.options[brand.selectedIndex].getAttribute('data-id');
+			$.ajax({
+				url: '@Url.Action("GetModelPort", "Calculator")',
+				type: 'POST',
+				data: {
+					'brandId': brandId,
+				},
+				success: (response) => {
+					selectModal.empty();
+					addOption(response.carsBrandsModels);
+				}
+			});
+			event.preventDefault();
+		};
+		</script>
+}

@@ -1,0 +1,193 @@
+﻿@model Autopodbor_312.ViewModel.PortfolioDetailsViewModel
+
+@{
+	ViewData["Title"] = "Изменение портфолио";
+}
+
+<h1 class="text-center mt-4">Изменить портфолио</h1>
+<hr />
+	<div class="row justify-content-evenly">
+		<div class="col-md-4">
+			<form asp-action="EditPortfolio" class="form">
+				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+				<input type="hidden" asp-for="@Model.Portfolio.Id" />
+				<input type="hidden" asp-for="@Model.Portfolio.MainImagePath" />
+				<input type="hidden" asp-for="@Model.Portfolio.Publicate" />
+				<div class="form-group mb-3">
+					<label asp-for="@Model.Portfolio.NameRu" class="control-label">Название портфолио на русском</label>
+					<input type="text" maxlength="50" asp-for="@Model.Portfolio.NameRu" class="form-control" required="required" />
+					<span asp-validation-for="@Model.Portfolio.NameRu" class="text-danger"></span>
+				</div>
+				<div class="form-group mb-3">
+					<label asp-for="@Model.Portfolio.BodyRu" class="control-label">Описание портфолио на русском</label>
+					<textarea asp-for="@Model.Portfolio.BodyRu" class="form-control" required="required"></textarea>
+					<span asp-validation-for="@Model.Portfolio.BodyRu" class="text-danger"></span>
+				</div>
+				<div class="form-group mb-3">
+					<label asp-for="@Model.Portfolio.NameKy" class="control-label">Название портфолио на кыргызском</label>
+					<input type="text" maxlength="50" asp-for="@Model.Portfolio.NameKy" class="form-control" required="required" />
+					<span asp-validation-for="@Model.Portfolio.NameKy" class="text-danger"></span>
+				</div>
+				<div class="form-group mb-3">
+					<label asp-for="@Model.Portfolio.BodyKy" class="control-label">Описание портфолио на кыргызском</label>
+					<textarea asp-for="@Model.Portfolio.BodyKy" class="form-control" required="required"></textarea>
+					<span asp-validation-for="@Model.Portfolio.BodyKy" class="text-danger"></span>
+				</div>
+				<div class="form-group mb-3">
+					<label asp-for="@Model.Portfolio.CarsBodyTypes.BodyType" class="control-label">Текущий кузов: @Model.Portfolio.CarsBodyTypes.BodyType</label>
+					<select asp-for="@Model.Portfolio.CarsBodyTypesId" class="form-control" asp-items="ViewBag.BodyTypes"></select>
+					<span asp-validation-for="@Model.Portfolio.CarsBodyTypes.BodyType" class="text-danger"></span>
+				</div>
+				<div class="form-group mb-3">
+					@if (Model.Portfolio.CarsBrandsId == null)
+					{
+						<label class="control-label">Марка не выбрана</label>
+						<select onchange="GetSelectedTextValue()" asp-for="@Model.Portfolio.CarsBrandsId" class="form-control" id="brand" asp-items="ViewBag.Brands"></select>
+					}
+					else
+					{
+						<label asp-for="@Model.Portfolio.CarsBrands.Brand" class="control-label">Текущий бренд: @Model.Portfolio.CarsBrands.Brand</label>
+						<select onchange="GetSelectedTextValue()" asp-for="@Model.Portfolio.CarsBrandsId" class="form-control" id="brand" asp-items="ViewBag.Brands"></select>
+						<span asp-validation-for="@Model.Portfolio.CarsBrands.Brand" class="text-danger"></span>
+					}
+				</div>
+				<div class="form-group mb-3">
+					@if (Model.Portfolio.CarsBrandsModelId == null)
+					{
+						<label class="control-label">Модель не выбрана</label>
+						<select asp-for="@Model.Portfolio.CarsBrandsModelId" class="form-control" id="select-model">
+							<option value="" disabled selected hidden>Без модели</option>
+						</select>
+					}
+					else
+					{
+						<label asp-for="@Model.Portfolio.CarsBrandsModel.Model" class="control-label">Текущая модель: @Model.Portfolio.CarsBrandsModel.Model</label>
+						<select id="select-model" asp-for="@Model.Portfolio.CarsBrandsModelId" class="form-control" asp-items="ViewBag.Models">
+						</select>
+						<span asp-validation-for="@Model.Portfolio.CarsBrandsModel.Model" class="text-danger"></span>
+					}
+				</div>
+				<div class="form-group mb-3">
+					<label asp-for="Portfolio.IsFieldInspection" class="control-label">Выездной осмотр?</label>
+					@if (Model.Portfolio.IsFieldInspection == true)
+					{
+						<input type="checkbox" checked="yes" asp-for="Portfolio.IsFieldInspection" />
+					}
+					else
+					{
+						<input type="checkbox" asp-for="Portfolio.IsFieldInspection" />
+					}
+				</div>
+				<div class="form-group mb-3">
+					<button type="submit" class="btn btn-outline-dark">Изменить</button>
+				</div>
+			</form>
+		</div>
+
+		<div class="col-md-4">
+			<h4 class="fs-3">Фото на главной странице </h4>
+			<form method="post" enctype="multipart/form-data">
+				<input type="hidden" name="id" value="@Model.MainPic.Id" />
+				<img width="250" height="250" src="@Model.MainPic.Path" />
+				<br />
+				<input type="file" class="form-control btn btn-outline-dark mb-3 mt-3" name="newPhoto" required="required" />
+				<button asp-action="EditMainPhoto" asp-controller="Portfolio" type="submit" class="btn btn-outline-dark">Изменить</button>
+			</form>
+		</div>
+	</div>
+
+	<h4 class="mt-3 mb-3 text-center fs-3">Фото на детальной странице</h4>
+	<div class="row justify-content-evenly row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-4">	
+		@foreach (var item in Model.MinorPictures)
+		{
+			<div class="col">
+				<form method="post" asp-action="EditMinorPhoto" asp-controller="Portfolio" enctype="multipart/form-data">
+					<input type="hidden" name="id" value="@item.Id" />
+					<img width="250" height="250" src="@item.Path" />
+					<br />
+					<input type="file" class="form-control btn btn-outline-dark mt-2 mb-2" name="newPhoto" required="required" /><br />
+					<button type="submit" class="btn btn-outline-dark mb-2">Изменить</button>
+				</form>
+				<form method="post">
+					<input type="submit" asp-action="DeletePhotoOrVideo" asp-controller="Portfolio" asp-route-id="@item.Id" class="btn btn-danger mb-3" value="Удалить фото" />
+				</form>
+			</div>
+		}
+	</div>
+
+	<div class="row justify-content-evenly">
+		<div class="col-md-4">
+			<form class="mt-3 mb-3" method="post" enctype="multipart/form-data">
+				<h6 class="text-center fw-bolder fs-4">Добавить новое фото для детальной страницы</h6>
+				<input type="file" class="form-control btn btn-outline-dark mb-2" name="newPhoto" required="required" />
+				<button type="submit" asp-action="AddMinorPhoto" asp-controller="Portfolio" asp-route-id="@Model.Portfolio.Id" class="btn btn-outline-dark">Добавить фото</button>
+			</form>
+		</div>
+	</div>
+
+	<h4 class="mt-3 mb-3 text-center fs-3">Видео на детальной странице</h4>
+	<div class="row justify-content-evenly row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-4">
+		@foreach (var item in Model.Videos)
+		{
+			<div class="col">
+				<form asp-action="EditVideo" asp-controller="Portfolio" method="post" enctype="multipart/form-data">
+					<input type="hidden" name="id" value="@item.Id" />
+					<iframe width="250" height="250" src=@item.Path title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+					<br />
+					<input class="bt-2 mb-2" type="text" name="newVideoId" placeholder="Введите id ролика" required="required" />	<br />
+					<button type="submit" class="btn btn-outline-dark mb-2">Изменить</button>
+				</form>
+				<form method="post">
+					<input type="submit" asp-action="DeletePhotoOrVideo" asp-controller="Portfolio" asp-route-id="@item.Id" class="btn btn-danger mb-3" value="Удалить видео" />
+				</form>
+			</div>
+		}
+	</div>
+
+	<div class="row justify-content-evenly">
+		<div class="col-md-4">
+			<form class="mt-3 mb-3" method="post" enctype="multipart/form-data">
+				<h6 class="text-center fw-bolder fs-4">Добавить видео</h6>
+				<input type="text" name="videoId" class="form-control" placeholder="Введите id ролика" required="required" />
+				<button type="submit" asp-action="AddVideo" asp-controller="Portfolio" asp-route-id="@Model.Portfolio.Id" class="btn btn-outline-dark mb-3 mt-2">Добавить видео</button>
+			</form>
+		</div>
+	</div>
+
+@section Scripts
+	{
+	<script>
+		$(document).ready(GetSelectedTextValue());
+
+		let Id = '';
+		function GetId(id) {
+			Id = id;
+		};
+
+		const selectModal = $('#select-model');
+		const addOption = (options) => {
+			if (options.length > 0) {
+				options.forEach((item) => {
+					selectModal.append(`<option value="${item.id}">${item.model}</option>`)
+				});
+				return;
+			}
+			selectModal.append('<option value="">Нет моделей</option>');
+		};
+		function GetSelectedTextValue() {
+			let brandId = $('#brand').val();
+			$.ajax({
+				url: '@Url.Action("GetModelEditPortfolio", "Calculator")',
+				type: 'POST',
+				data: {
+					'brandId': brandId,
+				},
+				success: (response) => {
+					selectModal.empty();
+					addOption(response.carsBrandsModels);
+				}
+			});
+		};
+	</script>
+}
+
